@@ -23,7 +23,7 @@ pipeline{
         stage('Create docket container'){
             steps{
      			sh '''
-     				docker run -d -p 8083:8083 ${JOB_NAME}:${BUILD_NUMBER}
+     				docker run -d -p 8082:8082 ${JOB_NAME}:${BUILD_NUMBER}
      			'''
  			}              
         }
