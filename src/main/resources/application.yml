@@ -1,0 +1,28 @@
+server:
+  port: 8083
+  servlet:
+    context-path: /StreamingVideoService
+spring:
+  application:
+   name: STREAMING-VIDEO-SERVICE
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 250MB
+      file-size-threshold: 2KB
+      max-request-size: 250MB
+
+file:
+  upload-dir: ./src/main/resources/mp4      
+  
+aws:
+  credentials:
+    accessKey: AKIAYP4WNQ6D6YQBFVQ3
+    secretKey: 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
+  bucket: streamingvideosbucket
+#  config:
+#    import: "optional:configserver:"
+#  cloud:
+#    config:
+#      enabled: true
+#      uri: http://localhost:9000
