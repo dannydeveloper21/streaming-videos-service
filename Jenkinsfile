@@ -14,7 +14,7 @@ pipeline{
         stage('Delete Docker container ID and Image version by Image name') {
         	steps {
 	            sh '''
-	            	image=${JOB_NAME}:${BUILD_NUMBER}-1
+	            	image=${JOB_NAME}:${currentBuild.getPreviousBuild().result}
 	            	echo $image
 	            	containerId=$(docker ps --all --quiet --filter ancestor=$image)
 	            	
@@ -31,7 +31,7 @@ pipeline{
         stage('Build and Publish image in Docker'){
             steps{
                 sh '''
-                    docker build --no-cache -t ${JOB_NAME}:latest .
+                    docker build --no-cache -t ${JOB_NAME}:${BUILD_NUMBER} .
                     docker images | grep ${JOB_NAME}
                 '''
                 echo "Build Process completed"
