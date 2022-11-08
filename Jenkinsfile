@@ -13,8 +13,11 @@ pipeline{
         }
         stage('Delete Docker container ID and Image version by Image name') {
         	steps {
+        		previousBuild = currentBuild.getPreviousBuild().result
+        		println(currentBuild.getPreviousBuild())
+				println(currentBuild.getPreviousBuild().result)
 	            sh '''
-	            	image=${JOB_NAME}:currentBuild.getPreviousBuild()
+	            	image=${JOB_NAME}:$previousBuild
 	            	echo $image
 	            	containerId=$(docker ps --all --quiet --filter ancestor=$image)
 	            	
