@@ -13,8 +13,7 @@ pipeline{
         }
         stage('Delete Docker container and previous Image version') {
         	steps {   
-	            println(previousBuild.getResult())  
-        		sh '''
+	            sh '''
 	            	image=$(docker images --format "{{.Repository}}:{{.Tag}}" | grep ${JOB_NAME})
 	            	echo $image
 	            	containerId=$(docker ps --all --quiet --filter ancestor=$image)
