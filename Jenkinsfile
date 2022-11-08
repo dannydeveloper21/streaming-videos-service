@@ -12,10 +12,12 @@ pipeline{
             }
         }
         stage('Delete Docker container ID and Image version by Image name') {
-        	steps {
-        		previousBuild = currentBuild.getPreviousBuild().result
+        	environment {
+	            previousBuild = currentBuild.getPreviousBuild().result
         		println(currentBuild.getPreviousBuild())
 				println(currentBuild.getPreviousBuild().result)
+	        }
+        	steps {        		
 	            sh '''
 	            	image=${JOB_NAME}:$previousBuild
 	            	echo $image
