@@ -14,10 +14,13 @@ pipeline{
         stage('Delete Docker container ID and Image version by Image name') {
         	steps {
 	            sh '''
-	            	containerId=$(docker ps --all --quiet --filter ancestor=${JOB_NAME}:currentBuild.getPreviousBuild())
+	            	image=${JOB_NAME}:${BUILD_NUMBER-1}
+	            	echo $image
+	            	containerId=$(docker ps --all --quiet --filter ancestor=$image)
+	            	
 	            	if [$containerId != ""]; then
 	            		docker stop $containerId && docker rm $containerId
-	            		docker rmi ${JOB_NAME}:$(currentBuild.previousBuild.number))
+	            		docker rmi $image)
 	            	else
 	            		echo "No container found with image name ${JOB_NAME}"
 	            	fi
