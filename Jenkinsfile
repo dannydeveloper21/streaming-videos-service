@@ -11,6 +11,19 @@ pipeline{
                 '''
             }
         }
+        stage('Delete Docker container ID by Image name if exists') {
+        	steps {
+	            sh '''
+	            	containerId=$(docker ps --all --quiet --filter ancestor=${JOB_NAME}:$(currentBuild.previousBuild.number))
+	            	if [$containerId != ""]; then
+	            		docker stop $containerId || true && docker rm $containerId || true
+	            	else
+	            		echo "No container found with image name ${JOB_NAME}"
+	            	fi
+	             '''
+	        }
+           
+        }
         stage('Build and Publish image in Docker'){
             steps{
                 sh '''
@@ -20,7 +33,7 @@ pipeline{
                 echo "Build Process completed"
             }
         }
-        stage('Create docket container'){
+        stage('Create container in Docker'){
             steps{
      			sh '''
      				docker run -d -p 8082:8082 ${JOB_NAME}:${BUILD_NUMBER}
