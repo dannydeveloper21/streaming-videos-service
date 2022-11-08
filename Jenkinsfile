@@ -12,21 +12,18 @@ pipeline{
             }
         }
         stage('Delete Docker container and previous Image version') {
-        	environment {
-	            previousBuild = currentBuild.getPreviousBuild()
-	            println(previousBuild.number)
-	        }
-        	steps {     
+        	steps {   
+	            println(previousBuild.getResult())  
         		sh '''
-	            	image=${JOB_NAME}:$previousBuild
+	            	image=$(docker images --format "{{.Repository}}:{{.Tag}}" | grep ${JOB_NAME})
 	            	echo $image
 	            	containerId=$(docker ps --all --quiet --filter ancestor=$image)
 	            	
-	            	if [! -z "$containerId"]; then
+	            	if [-z "$containerId"]; then
+	            		echo "No container found with image name $image"	            		
+	            	else
 	            		docker stop $containerId && docker rm $containerId
 	            		docker rmi $image
-	            	else
-	            		echo "No container found with image name $image"
 	            	fi
 	             '''
 	        }
@@ -44,7 +41,7 @@ pipeline{
         stage('Create container in Docker'){
             steps{
      			sh '''
-     				docker run -d -p 8082:8082 ${JOB_NAME}:${BUILD_NUMBER}
+     				docker run -d --name  -p 8082:8082 ${JOB_NAME}:${BUILD_NUMBER}
      			'''
  			}              
         }
