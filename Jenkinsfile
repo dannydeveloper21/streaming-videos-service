@@ -13,7 +13,7 @@ pipeline{
         }
         stage('Delete Docker container ID and Image version by Image name') {
         	environment {
-	            previousBuild = currentBuild.getPreviousBuild()
+	            previousBuild = currentBuild.getPreviousBuild().getResult()
 	        }
         	steps {     
         		sh '''
