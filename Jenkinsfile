@@ -14,15 +14,15 @@ pipeline{
         stage('Delete Docker container ID and Image version by Image name') {
         	steps {
 	            sh '''
-	            	echo currentBuild.getPreviousBuild().result
-	            	image=${JOB_NAME}:${BUILD_NUMBER-1}
+	            	image=${JOB_NAME}:${BUILD_NUMBER}-1
+	            	echo $image
 	            	containerId=$(docker ps --all --quiet --filter ancestor=$image)
 	            	
-	            	if [$containerId != ""]; then
+	            	if [! -z "$containerId"]; then
 	            		docker stop $containerId && docker rm $containerId
-	            		docker rmi $image)
+	            		docker rmi $image
 	            	else
-	            		echo "No container found with image name ${JOB_NAME}"
+	            		echo "No container found with image name $image"
 	            	fi
 	             '''
 	        }
@@ -31,7 +31,7 @@ pipeline{
         stage('Build and Publish image in Docker'){
             steps{
                 sh '''
-                    docker build --no-cache -t ${JOB_NAME}:${BUILD_NUMBER} .
+                    docker build --no-cache -t ${JOB_NAME}:latest .
                     docker images | grep ${JOB_NAME}
                 '''
                 echo "Build Process completed"
