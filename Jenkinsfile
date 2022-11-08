@@ -40,7 +40,7 @@ pipeline{
         stage('Create container in Docker'){
             steps{
      			sh '''
-     				docker run -d --name  -p 8083:8083 ${JOB_NAME}:${BUILD_NUMBER}
+     				docker run -d -p 8083:8083 ${JOB_NAME}:${BUILD_NUMBER}
      			'''
  			}              
         }
