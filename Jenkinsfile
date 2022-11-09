@@ -15,15 +15,18 @@ pipeline{
         	steps {   
 	            sh '''
 	            	image=$(docker images --format "{{.Repository}}:{{.Tag}}" | grep ${JOB_NAME})
-	            	echo $image
-	            	containerId=$(docker ps --all --quiet --filter ancestor=$image)
-	            	
-	            	if [-z "$containerId"]; then
-	            		echo "No container found with image name $image"	            		
+	            	if [-z $image]; then
+	            		echo "No ${JOB_NAME} image found"
 	            	else
-	            		docker stop $containerId && docker rm $containerId
-	            		docker rmi $image
-	            	fi
+	            		containerId=$(docker ps --all --quiet --filter ancestor=$image)
+	            	
+		            	if [-z "$containerId"]; then
+		            		echo "No container found with image name $image"	            		
+		            	else
+		            		docker stop $containerId && docker rm $containerId
+		            		docker rmi $image
+		            	fi
+		            fi
 	             '''
 	        }
            
