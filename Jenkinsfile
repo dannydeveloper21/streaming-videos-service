@@ -15,9 +15,9 @@ pipeline{
         	steps {   
 	            sh '''
 	            	imageFound=1
-	            	image=$(docker images --format "{{.Repository}}:{{.Tag}}" | grep ${JOB_NAME})
+	            	dockerImg=$(docker images --format "{{.Repository}}:{{.Tag}}" | grep ${JOB_NAME})
 	            	
-	            	if [-z "$image"] 
+	            	if [-z "$dockerImg"] 
 	            	then
 	            		$imageFound=0
 	            		echo "No image found"
@@ -25,14 +25,14 @@ pipeline{
 		            
 		            if [$imageFound -eq 1]
 		            then
-			            containerId=$(docker ps --all --quiet --filter ancestor=$image
+			            containerId=$(docker ps --all --quiet --filter ancestor=$dockerImg
 		            	
 			            if [-z "$containerId"]
 			            then
-			            	echo "No container found with image name $image"	            		
+			            	echo "No container found with image name $dockerImg"	            		
 			            else
 			            	docker stop $containerId && docker rm $containerId
-			            	docker rmi $image
+			            	docker rmi $dockerImg
 			            fi
 			        fi
 	             '''
@@ -51,7 +51,7 @@ pipeline{
         stage('Create container in Docker'){
             steps{
      			sh '''
-     				docker run -d -p 8083:8083 ${JOB_NAME}:${BUILD_NUMBER}
+     				docker run -d -p 8083:8083 --name ${JOB_NAME} ${JOB_NAME}:${BUILD_NUMBER}
      			'''
  			}              
         }
