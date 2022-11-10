@@ -14,7 +14,7 @@ pipeline{
         stage('Delete Docker container and previous Image version') {
         	steps {   
 	            sh '''
-	            	imageFound=manifest inspect ${JOB_NAME} > /dev/null ; echo $?
+	            	imageFound=$(docker manifest inspect ${JOB_NAME} > /dev/null ; echo $?)
 	            	
 	            	if [$imageFound -eq 0];
 		            then
