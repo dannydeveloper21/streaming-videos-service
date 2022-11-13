@@ -14,12 +14,10 @@ pipeline{
         stage('Delete Docker container and previous Image version') {
         	steps {   
 	            sh '''
-	            	imageFound=$(docker images -q ${JOB_NAME} 2> /dev/null;)
-	            	
-	            	if [-z "$imageFound"];
+	                dockerImg=$(docker images --format "{{.Repository}}:{{.Tag}}" | grep ${JOB_NAME})
+			        if [-z "$dockerImg"];
 		            then
-		            	dockerImg=$(docker images --format "{{.Repository}}:{{.Tag}}" | grep ${JOB_NAME})
-			            containerId=$(docker ps --all --quiet --filter ancestor=$dockerImg
+		            	containerId=$(docker ps --all --quiet --filter ancestor=$dockerImg
 		            	
 			            if [-z "$containerId"];
 			            then			            
