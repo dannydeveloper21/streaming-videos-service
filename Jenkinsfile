@@ -17,7 +17,7 @@ pipeline{
 	                if ["$(docker images --format '{{.Repository}}:{{.Tag}}' | grep ${JOB_NAME} >/dev/null 2>&1 && echo -e 'yes' || echo -e 'no')" == "yes"];
 		            then
 		            dockerImg=$(docker images --format "{{.Repository}}:{{.Tag}}" | grep ${JOB_NAME})
-		            ontainerId=$(docker ps --all --quiet --filter ancestor=$dockerImg
+		            containerId=$(docker ps --all --quiet --filter ancestor=$dockerImg)
 		            if [-z "$containerId"];
 			        then			            
 			        docker rmi $dockerImg
