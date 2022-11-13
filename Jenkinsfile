@@ -14,8 +14,7 @@ pipeline{
         stage('Delete Docker container and previous Image version') {
         	steps {   
 	            sh '''
-	                dockerImg=$(docker images --format "{{.Repository}}:{{.Tag}}" | grep ${JOB_NAME} >/dev/null 2>&1 && echo yes || echo no)
-			        if ["$dockerImg" == "yes"];
+	                if ["$(docker images --format "{{.Repository}}:{{.Tag}}" | grep ${JOB_NAME} >/dev/null 2>&1 && echo yes || echo no)" == "yes"]
 		            then
 		            	dockerImg=$(docker images --format "{{.Repository}}:{{.Tag}}" | grep ${JOB_NAME})
 		            	containerId=$(docker ps --all --quiet --filter ancestor=$dockerImg
