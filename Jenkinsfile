@@ -14,9 +14,9 @@ pipeline{
         stage('Delete Docker container and previous Image version') {
         	steps {   
 	            sh '''
-	            	imageFound=$(docker manifest inspect ${JOB_NAME} > /dev/null ; echo $?)
+	            	imageFound=$(docker images -q spring-native_mvn-docker 2> /dev/null)
 	            	
-	            	if [$imageFound -eq 0];
+	            	if ["$imageFound" != ""];
 		            then
 		            	dockerImg=$(docker images --format "{{.Repository}}:{{.Tag}}" | grep ${JOB_NAME})
 			            containerId=$(docker ps --all --quiet --filter ancestor=$dockerImg
