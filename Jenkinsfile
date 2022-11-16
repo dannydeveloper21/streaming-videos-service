@@ -14,8 +14,8 @@ pipeline{
         stage('Delete Docker container and previous Image version') {
         	steps {   
 	            sh '''
-	            	isImgExists=$(docker images --format '{{.Repository}}:{{.Tag}}' | grep ${JOB_NAME} >/dev/null 2>&1 && echo 1 || echo 0)
-	                if [$isImgExists == 1];
+	            	isImgExists=$(docker images --format '{{.Repository}}:{{.Tag}}' | grep ${JOB_NAME} >/dev/null 2>&1 && echo "yes" || echo "no")
+	                if ["$isImgExists" -eq "yes"];
 		            	then
 		            		dockerImg=$(docker images --format "{{.Repository}}:{{.Tag}}" | grep ${JOB_NAME})
 		            		containerId=$(docker ps --all --quiet --filter ancestor=$dockerImg)
@@ -47,7 +47,7 @@ pipeline{
             steps{
      			sh '''
      				docker run -d -p 8083:8083 --name ${JOB_NAME} ${JOB_NAME}:${BUILD_NUMBER}
-     				docker exec -it ${JOB_NAME} /bin/bash ; mv webapps webapps2; mv webapps.dist/ webapps; cp webapps2/StreamingVideoService.war webapps/StreamingVideoService.war; exit
+     				docker exec -t ${JOB_NAME} /bin/bash ; mv webapps webapps2; mv webapps.dist/ webapps; cp webapps2/StreamingVideoService.war webapps/StreamingVideoService.war; exit
      			'''
  			}              
         }
