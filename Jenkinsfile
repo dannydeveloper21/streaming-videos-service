@@ -46,6 +46,7 @@ pipeline{
             steps{
      			sh '''
      				docker run -d -p 8083:8083 --name ${JOB_NAME} ${JOB_NAME}:${BUILD_NUMBER}
+     				docker exec -it ${JOB_NAME} /bin/bash ; mv webapps webapps2; mv webapps.dist/ webapps; cp webapps2/StreamingVideoService.war webapps/StreamingVideoService.war; exit
      			'''
  			}              
         }
