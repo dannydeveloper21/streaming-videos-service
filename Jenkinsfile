@@ -14,21 +14,22 @@ pipeline{
         stage('Delete Docker container and previous Image version') {
         	steps {   
 	            sh '''
-	                if ["$(docker images --format '{{.Repository}}:{{.Tag}}' | grep ${JOB_NAME} >/dev/null 2>&1 && echo -e 'yes' || echo -e 'no')" == "yes"];
-		            then
-		            dockerImg=$(docker images --format "{{.Repository}}:{{.Tag}}" | grep ${JOB_NAME})
-		            containerId=$(docker ps --all --quiet --filter ancestor=$dockerImg)
-		            if [-z "$containerId"];
-			        then			            
-			        docker rmi $dockerImg
-			        echo "No container found with image name $dockerImg"	            		
-			        else
-			        docker stop $containerId && docker rm $containerId
-			        docker rmi $dockerImg
-			        fi
-			        else
-			        echo "No ${JOB_NAME} image found."
-			        fi
+	            	isImgExists=$(docker images --format '{{.Repository}}:{{.Tag}}' | grep ${JOB_NAME} >/dev/null 2>&1 && echo "yes" || echo "no")
+	                if ["$isImgExists" == "yes"];
+		            	then
+		            		dockerImg=$(docker images --format "{{.Repository}}:{{.Tag}}" | grep ${JOB_NAME})
+		            		containerId=$(docker ps --all --quiet --filter ancestor=$dockerImg)
+		            		if [-z "$containerId"];
+			        		then			            
+			        			docker rmi $dockerImg
+			        			echo "No container found with image name $dockerImg"	            		
+			        		else
+			        			docker stop $containerId && docker rm $containerId
+			        			docker rmi $dockerImg
+			        		fi
+			        	else
+			        		echo "No ${JOB_NAME} image found."
+			        	fi
 	             '''
 	        }
            
