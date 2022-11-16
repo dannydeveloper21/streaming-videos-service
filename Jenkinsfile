@@ -15,7 +15,7 @@ pipeline{
         	steps {   
 	            sh '''
 	            	isImgExists=$(docker images --format '{{.Repository}}:{{.Tag}}' | grep ${JOB_NAME} >/dev/null 2>&1 && echo 1 || echo 0)
-	                if ["$isImgExists" == "1"];
+	                if [$isImgExists == 1];
 		            	then
 		            		dockerImg=$(docker images --format "{{.Repository}}:{{.Tag}}" | grep ${JOB_NAME})
 		            		containerId=$(docker ps --all --quiet --filter ancestor=$dockerImg)
