@@ -47,13 +47,12 @@ pipeline{
             steps{
      			sh '''
      				docker run -d -p 8083:8083 --name ${JOB_NAME} ${JOB_NAME}:${BUILD_NUMBER}
-     				docker exec -ti ${JOB_NAME} sh -c "
-     					mv webapps webapps2 && 
-     					mv webapps.dist/ webapps && 
-     					cp webapps2/StreamingVideoService.war webapps/StreamingVideoService.war && 
-     					sed -i '/<\/tomcat-users>/ i\<role rolename="admin-gui"/>\n <role rolename="manager-gui"/>\n <user username="admin" password="Admin.12345" roles="manager-gui"/>' tomcat-users.xml
-     					exit "
-     				docker restart ${JOB_NAME}
+     				docker exec -t ${JOB_NAME} sh -c "
+     					mv webapps webapps2 &&
+						mv webapps.dist/ webapps &&
+						cp webapps2/StreamingVideoService.war webapps/StreamingVideoService.war &&
+						exit
+				    docker restart ${JOB_NAME}
      			'''
  			}              
         }
