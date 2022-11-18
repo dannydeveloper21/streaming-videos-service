@@ -51,7 +51,7 @@ pipeline{
      					mv webapps webapps2 &&
 						mv webapps.dist/ webapps &&
 						cp webapps2/StreamingVideoService.war webapps/StreamingVideoService.war &&
-						exit
+						exit "
 				    docker restart ${JOB_NAME}
      			'''
  			}              
