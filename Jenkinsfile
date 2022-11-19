@@ -43,16 +43,10 @@ pipeline{
                 echo "Build Process completed"
             }
         }
-        stage('Create container in Docker'){
+        stage('Create and configure container in Docker'){
             steps{
      			sh '''
      				docker run -d -p 8083:8083 --name ${JOB_NAME} ${JOB_NAME}:${BUILD_NUMBER}
-     				docker exec -t ${JOB_NAME} sh -c "
-     					mv webapps webapps2 &&
-						mv webapps.dist/ webapps &&
-						cp webapps2/StreamingVideoService.war webapps/StreamingVideoService.war &&
-						exit "
-				    docker restart ${JOB_NAME}
      			'''
  			}              
         }
