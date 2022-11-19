@@ -1,4 +1,4 @@
-FROM tomcat:latest
+FROM tomcat:9.0.69-jdk8-corretto
 LABEL maintainer="php7mvc.developers@gmail.com"
 
 #Setup tomcat server
