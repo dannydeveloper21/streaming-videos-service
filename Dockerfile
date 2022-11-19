@@ -1,4 +1,5 @@
 FROM tomcat:latest
+LABEL maintainer="php7mvc.developers@gmail.com"
 
 #Setup tomcat server
 RUN sed -i 's/port="8080"/port="8083"/' ${CATALINA_HOME}/conf/server.xml
@@ -12,6 +13,7 @@ RUN rm -f ${CATALINA_HOME}/webapps/manager/META-INF/context.xml
 #Copying configuration files
 COPY tomcat-users.xml ${CATALINA_HOME}/conf/
 COPY context.xml ${CATALINA_HOME}/webapps/manager/META-INF/
-COPY target/*.war ${CATALINA_HOME}/webapps/
+ADD target/*.war ${CATALINA_HOME}/webapps/
 
+EXPOSE 8083
 CMD [ "catalina.sh", "run" ]
