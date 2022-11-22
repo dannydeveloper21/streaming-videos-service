@@ -35,7 +35,7 @@ pipeline{
         stage('Build') {
             steps {
                 sh '''
-                    mvn clean install
+                    mvn install -Dmaven.test.skip=true
                 '''
             }
         }
@@ -85,7 +85,7 @@ pipeline{
         stage('Push image to Docker Hub') {
         	steps {
 	            sh '''
-	            	echo $docker_hub_PSW | docker login -u $docker-hub_USR --password-stdin
+	            	echo $dockerhub_PSW | docker login -u $dockerhub_USR --password-stdin
 	            	
 	            	img=$(docker images --quiet ${JOB_NAME}:${BUILD_NUMBER}) 
 	            	docker tag $img developer2019/streaming-video-srv:${BUILD_NUMBER}
