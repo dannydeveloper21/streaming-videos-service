@@ -1,17 +1,16 @@
 pipeline{
-    agent any
+    agent {label 'mac'}
+    tools { maven '3.8.6' }
     
     environment {
 	     dockerhub=credentials('docker-hub')
 	}
 	
     stages {
-    	stage('Export Maven to PATH'){
+    	stage('Check Maven version'){
     	   	steps {
 	   	        sh '''
-                    export MAVEN_HOME=/opt/homebrew/Cellar/maven/3.8.6/libexec
-                    export PATH=$PATH:$MAVEN_HOME/bin
-                    mvn --version
+	   	        	mvn --version
 	   	         '''
 	   	    }                
     	                        
