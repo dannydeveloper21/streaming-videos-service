@@ -16,24 +16,18 @@ pipeline{
 	   	    }                
     	                        
     	}
-    	
-    	stage('Clear') {
-	       steps {
-       	    sh "mvn clean"
-       	   }
-	    }
 	    
 	    stage('Tests') {
     	   parallel {
 	   	        stage('Unit test'){
 	   	            steps {
-            	   	    sh "mvn test"
+            	   	    sh "mvn clean test"
             	   	}
 	   	        }
 	   	        
 	   	        stage('Integration test'){
 	   	            steps {
-            	   	    sh "mvn verify"
+            	   	    sh "mvn clean verify"
             	   	}
 	   	        }
 	   	    }
@@ -42,7 +36,7 @@ pipeline{
         stage('Build') {
             steps {
                 sh '''
-                    mvn install
+                    mvn clean install
                 '''
             }
         }
