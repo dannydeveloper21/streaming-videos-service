@@ -1,17 +1,47 @@
 pipeline{
     agent any
+    
+    environment {
+	     dockerhub=credentials('docker-hub')
+	}
+	
     stages {
-        stage('Build and Push to Artifactory') {
-            steps {
-                sh '''
+    	stage('Export Maven to PATH'){
+    	   	steps {
+	   	        sh '''
                     export MAVEN_HOME=/opt/homebrew/Cellar/maven/3.8.6/libexec
                     export PATH=$PATH:$MAVEN_HOME/bin
                     mvn --version
-                    mvn clean install
+	   	         '''
+	   	    }                
+    	                        
+    	}
+    	
+    	stage('Clear') {
+	       sh "mvn clean"
+	    }
+	    
+	    stage('Tests') {
+    	   parallel {
+	   	        stage('Unit test'){
+	   	            sh "mvn test"
+	   	        }
+	   	        
+	   	        stage('Integration test'){
+	   	            sh "mvn verify"
+	   	        }
+	   	    }
+    	}
+
+        stage('Build') {
+            steps {
+                sh '''
+                    mvn install
                 '''
             }
         }
-        stage('Delete Docker container and previous Image version') {
+        
+        stage('Delete existing container and previous image version') {
         	steps {   
 	            sh '''
 	            	isImgExists=$(docker images --format '{{.Repository}}:{{.Tag}}' | grep ${JOB_NAME} >/dev/null 2>&1 && echo "yes" || echo "no")
@@ -34,7 +64,8 @@ pipeline{
 	        }
            
         }
-        stage('Build and Publish image in Docker'){
+        
+        stage('Build Docker image'){
             steps{
                 sh '''
                     docker build --no-cache -t ${JOB_NAME}:${BUILD_NUMBER} .
@@ -43,12 +74,26 @@ pipeline{
                 echo "Build Process completed"
             }
         }
-        stage('Create and configure container in Docker'){
+        
+        stage('Create docker container'){
             steps{
      			sh '''
      				docker run -d -p 8083:8083 --name ${JOB_NAME} ${JOB_NAME}:${BUILD_NUMBER}
      			'''
  			}              
+        }
+        
+        stage('Push image to Docker Hub') {
+        	steps {
+	            sh '''
+	            	echo $docker_hub_PSW | docker login -u $docker-hub_USR --password-stdin
+	            	
+	            	img=$(docker images --quiet ${JOB_NAME}:${BUILD_NUMBER}) 
+	            	docker tag $img developer2019/streaming-video-srv:${BUILD_NUMBER}
+	            	docker push developer2019/streaming-video-srv:${BUILD_NUMBER}
+	            '''
+	        }
+           
         }
     }
 }
