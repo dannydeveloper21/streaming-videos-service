@@ -18,17 +18,23 @@ pipeline{
     	}
     	
     	stage('Clear') {
-	       sh "mvn clean"
+	       steps {
+       	    sh "mvn clean"
+       	   }
 	    }
 	    
 	    stage('Tests') {
     	   parallel {
 	   	        stage('Unit test'){
-	   	            sh "mvn test"
+	   	            steps {
+            	   	    sh "mvn test"
+            	   	}
 	   	        }
 	   	        
 	   	        stage('Integration test'){
-	   	            sh "mvn verify"
+	   	            steps {
+            	   	    sh "mvn verify"
+            	   	}
 	   	        }
 	   	    }
     	}
