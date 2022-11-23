@@ -85,7 +85,7 @@ pipeline{
         stage('Push image to Docker Hub') {
         	steps {
 	            sh '''
-	            	echo $dockerhub_PSW | docker login -u $dockerhub_USR --password-stdin
+	            	docker login --username=$dockerhub_USR --password=$dockerhub_PSW
 	            	
 	            	img=$(docker images --quiet ${JOB_NAME}:${BUILD_NUMBER}) 
 	            	docker tag $img developer2019/streaming-video-srv:${BUILD_NUMBER}
