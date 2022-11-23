@@ -16,21 +16,11 @@ pipeline{
     	                        
     	}
 	    
-	    stage('Tests') {
-    	   parallel {
-	   	        stage('Unit test'){
-	   	            steps {
-            	   	    sh "mvn clean test"
-            	   	}
-	   	        }
-	   	        
-	   	        stage('Integration test'){
-	   	            steps {
-            	   	    sh "mvn clean verify"
-            	   	}
-	   	        }
-	   	    }
-    	}
+	    stage('Unit test'){
+	   	    steps {
+            	sh "mvn clean test"
+            }
+	   	}
 
         stage('Build') {
             steps {
