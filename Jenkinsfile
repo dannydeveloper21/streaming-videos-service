@@ -71,7 +71,7 @@ pipeline{
 			         contSts= sh '''
 				     			docker run -d -p 8083:8083 --name ${JOB_NAME} ${JOB_NAME}:${BUILD_NUMBER}
 				     			contHostPort=$(docker port ${JOB_NAME} 8083/tcp)
-				     			echo $(curl -s -o /dev/null -I -w '%{http_code}' http://$contHostPort/StreamingVideoService/actuator/health)
+				     			echo $(curl -s -o /dev/null -I -w "%{http_code}" http://$contHostPort/StreamingVideoService/actuator/health)
 			     			'''
 			     }
  			}              
@@ -80,7 +80,7 @@ pipeline{
         stage('Push image to ECR') {
         	when {
 	            expression {
-            	   return contSts == 200
+            	   return contSts == '200'
             	}
 	        }
         	steps {
