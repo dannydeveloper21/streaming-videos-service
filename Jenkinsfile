@@ -80,7 +80,7 @@ pipeline{
         stage('Push image to ECR') {
         	when {
 	            expression {
-            	   return contSts == '200'
+            	   return contSts == '000'
             	}
 	        }
         	steps {
