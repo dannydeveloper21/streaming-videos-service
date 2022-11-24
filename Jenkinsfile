@@ -74,6 +74,7 @@ pipeline{
 				     			echo $(curl -s -o /dev/null -I -w "%{http_code}" http://$contHostPort/StreamingVideoService/actuator/health)
 			     			'''
 			     }
+			     echo contSts
  			}              
         }
         
