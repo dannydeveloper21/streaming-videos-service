@@ -77,7 +77,7 @@ pipeline{
         stage('Push image to ECR') {
         	when {
 	            expression {
-	            	CONTAINER_STS = sh(returnStdout:true, script:'contHostPort=$(docker port ${JOB_NAME} 8083/tcp) echo $(curl -s -o /dev/null -I -w "%{http_code}" http://$contHostPort/StreamingVideoService/actuator/health)').trim()
+	            	CONTAINER_STS = sh(returnStdout:true, script:'echo $(curl -s -o /dev/null -I -w "%{http_code}" http://$(docker port ${JOB_NAME} 8083/tcp)/StreamingVideoService/actuator/health)').trim()
             	    echo CONTAINER_STS
             	    return CONTAINER_STS == '200' || params.FALSE_STS
             	}
