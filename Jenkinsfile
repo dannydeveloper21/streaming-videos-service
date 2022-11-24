@@ -69,7 +69,7 @@ pipeline{
             steps {
      			script {
 			         contSts= sh '''
-				     			docker run -d -p 8083:8083 --name ${JOB_NAME} ${JOB_NAME}:${BUILD_NUMBER}"
+				     			docker run -d -p 8083:8083 --name ${JOB_NAME} ${JOB_NAME}:${BUILD_NUMBER}
 				     			contHostPort=$(docker port ${JOB_NAME} 8083/tcp)
 				     			echo $(curl -s -o /dev/null -I -w '%{http_code}' http://$contHostPort/StreamingVideoService/actuator/health)
 			     			'''
