@@ -4,6 +4,7 @@ pipeline{
     
     environment {
 	     dockerhub=credentials('docker-hub')
+	     contSts=''
 	}
 	
     stages {
@@ -66,20 +67,25 @@ pipeline{
         
         stage('Create docker container'){
             steps{
-     			sh '''
-     				docker run -d -p 8083:8083 --name ${JOB_NAME} ${JOB_NAME}:${BUILD_NUMBER}
+     			contSts= sh '''
+	     			docker run -d -p 8083:8083 --name ${JOB_NAME} ${JOB_NAME}:${BUILD_NUMBER}"
+	     			contHostPort=$(docker port ${JOB_NAME} 8083/tcp)
+	     			echo $(curl -s -o /dev/null -I -w '%{http_code}' http://$contHostPort/StreamingVideoService/actuator/health)
      			'''
  			}              
         }
         
-        stage('Push image to Docker Hub') {
+        stage('Push image to ECR') {
+        	when {
+	            expression {
+            	   return contSts == 200
+            	}
+	        }
         	steps {
 	            sh '''
-	            	docker login --username=$dockerhub_USR --password=$dockerhub_PSW
-	            	
-	            	img=$(docker images --quiet ${JOB_NAME}:${BUILD_NUMBER}) 
-	            	docker tag $img developer2019/streaming-video-srv:${BUILD_NUMBER}
-	            	docker push developer2019/streaming-video-srv:${BUILD_NUMBER}
+	            	aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 583894140807.dkr.ecr.us-east-1.amazonaws.com
+	            	docker tag ${JOB_NAME}:${BUILD_NUMBER} 583894140807.dkr.ecr.us-east-1.amazonaws.com/dannydeveloper2022/streaming-video-srv:latest	   
+	            	docker push 583894140807.dkr.ecr.us-east-1.amazonaws.com/dannydeveloper2022/streaming-video-srv:latest         	
 	            '''
 	        }
            
