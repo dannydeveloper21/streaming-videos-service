@@ -3,7 +3,7 @@ pipeline{
     tools { maven '3.8.6' }
     parameters {
         booleanParam(name: 'FALSE_STS', defaultValue: false, description: '')
-        string(name: 'AWS_REGION', defaultValue: 'us-east-1', description: '')
+        choice(name: 'AWS_REGION', choices: ['us-east-1', 'us-east-2'], description: '')
         string(name: 'AWS_ACCOUNT', defaultValue: '583894140807', description: '')
         string(name: 'AWS_ECR_URI', defaultValue: '583894140807.dkr.ecr.us-east-1.amazonaws.com', description: '')
     }
@@ -89,7 +89,7 @@ pipeline{
 	            sh '''
 	            	aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_ECR_URI}
 	            	repExists=$(aws ecr describe-repositories --repository-names "${AWS_ACCOUNT}/${JOB_NAME}" --region ${AWS_REGION} --query "repositories[0].registryId" --output text 2>/dev/null)
-	            	if [-z "$repExists"];
+	            	if ["$repExists" -eq ""];
 	            	then
 	            		aws ecr create-repository --repository-name ${AWS_ACCOUNT}/${JOB_NAME} --region ${AWS_REGION}
 	            	fi
