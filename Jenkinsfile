@@ -54,6 +54,12 @@ pipeline{
 			        				docker stop $containerId
 			        			fi
 			        			docker rm --force $containerId
+			        			
+			        			while [ $(docker ps --filter name=${JOB_NAME} >/dev/null 2>&1 && echo "yes" || echo "no") == "yes" ];
+			        			do
+			        				echo "Removing ${JOB_NAME} container ..."
+			        			done
+			        			
 			        			docker rmi $(docker images | grep ${JOB_NAME})
 			        		fi
 			        	else
