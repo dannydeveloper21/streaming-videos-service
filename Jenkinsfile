@@ -52,7 +52,7 @@ pipeline{
 			        			if [ $(docker container inspect -f '{{.State.Running}}' ${JOB_NAME}) == true ];
 			        			then
 			        				docker stop $containerId
-			        			if
+			        			fi
 			        			docker rm --force $containerId
 			        			docker rmi $(docker images | grep ${JOB_NAME})
 			        		fi
