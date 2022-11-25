@@ -45,7 +45,7 @@ pipeline{
 		            		hasContainer=$(docker ps -q --filter name=${JOB_NAME} >/dev/null 2>&1 && echo "yes" || echo "no")
 		            		if [[ ! "$(docker ps -q --filter name=${JOB_NAME})" ]];
 			        		then			            
-			        			docker rmi $(docker images | grep ${JOB_NAME})
+			        			docker rmi $(docker images --format '{{.Repository}}:{{.Tag}}' | grep ${JOB_NAME})
 			        			echo "No container named ${JOB_NAME} found."	            		
 			        		else
 			        			containerId=$(docker ps --all | grep ${JOB_NAME})
