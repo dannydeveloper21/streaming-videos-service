@@ -49,7 +49,11 @@ pipeline{
 			        			echo "No container named ${JOB_NAME} found."	            		
 			        		else
 			        			containerId=$(docker ps --all | grep ${JOB_NAME})
-			        			docker stop $containerId && docker rm --force $containerId
+			        			if [ $(docker container inspect -f '{{.State.Running}}' ${JOB_NAME}) == true ];
+			        			then
+			        				docker stop $containerId
+			        			if
+			        			docker rm --force $containerId
 			        			docker rmi $(docker images | grep ${JOB_NAME})
 			        		fi
 			        	else
