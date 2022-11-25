@@ -87,14 +87,14 @@ pipeline{
 	        }
         	steps {
 	            sh '''
-	            	aws ecr get-login-password --region ${params.AWS_REGION} | docker login --username AWS --password-stdin ${params.AWS_ECR_URI}
-	            	repExists=$(aws ecr describe-repositories --repository-names ${params.AWS_ACCOUNT}/${JOB_NAME} --region ${params.AWS_REGION} --query "repositories[0].registryId" --output text 2>/dev/null)
+	            	aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_ECR_URI}
+	            	repExists=$(aws ecr describe-repositories --repository-names "${AWS_ACCOUNT}/${JOB_NAME}" --region ${AWS_REGION} --query "repositories[0].registryId" --output text 2>/dev/null)
 	            	if [-z "$repExists"];
 	            	then
-	            		aws ecr create-repository --repository-name ${params.AWS_ACCOUNT}/${JOB_NAME} --region ${params.AWS_REGION}
+	            		aws ecr create-repository --repository-name ${AWS_ACCOUNT}/${JOB_NAME} --region ${AWS_REGION}
 	            	fi
-	            	docker tag ${JOB_NAME}:${BUILD_NUMBER} ${params.AWS_ECR_URI}/${params.AWS_ACCOUNT}/${JOB_NAME}:latest	   
-	            	docker push ${params.AWS_ECR_URI}/${params.AWS_ACCOUNT}/${JOB_NAME}:latest         	
+	            	docker tag ${JOB_NAME}:${BUILD_NUMBER} ${AWS_ECR_URI}/${AWS_ACCOUNT}/${JOB_NAME}:latest	   
+	            	docker push ${AWS_ECR_URI}/${AWS_ACCOUNT}/${JOB_NAME}:latest         	
 	            '''
 	        }
            
