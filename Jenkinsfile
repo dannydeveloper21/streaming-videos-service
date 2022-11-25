@@ -48,7 +48,7 @@ pipeline{
 			        			docker rmi $(docker images | grep ${JOB_NAME})
 			        			echo "No container named ${JOB_NAME} found."	            		
 			        		else
-			        			containerId=$(docker ps --filter name=${JOB_NAME})
+			        			containerId=$(docker ps --all | grep ${JOB_NAME})
 			        			docker stop $containerId && docker rm $containerId
 			        			docker rmi $(docker images | grep ${JOB_NAME})
 			        		fi
