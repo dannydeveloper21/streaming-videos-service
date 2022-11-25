@@ -3,6 +3,9 @@ pipeline{
     tools { maven '3.8.6' }
     parameters {
         booleanParam(name: 'FALSE_STS', defaultValue: false, description: '')
+        string(name: 'AWS_REGION', defaultValue: 'us-east-1', description: '')
+        string(name: 'AWS_ACCOUNT', defaultValue: '583894140807', description: '')
+        string(name: 'AWS_ECR_URI', defaultValue: '583894140807.dkr.ecr.us-east-1.amazonaws.com', description: '')
     }
     environment {
 	     dockerhub=credentials('docker-hub')
@@ -84,9 +87,14 @@ pipeline{
 	        }
         	steps {
 	            sh '''
-	            	aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 583894140807.dkr.ecr.us-east-1.amazonaws.com
-	            	docker tag ${JOB_NAME}:${BUILD_NUMBER} 583894140807.dkr.ecr.us-east-1.amazonaws.com/dannydeveloper2022/streaming-video-srv:latest	   
-	            	docker push 583894140807.dkr.ecr.us-east-1.amazonaws.com/dannydeveloper2022/streaming-video-srv:latest         	
+	            	aws ecr get-login-password --region ${params.AWS_REGION} | docker login --username AWS --password-stdin ${params.AWS_ECR_URI}
+	            	repExists=$(aws ecr describe-repositories --repository-names ${params.AWS_ACCOUNT}/${JOB_NAME} --region ${params.AWS_REGION} --query "repositories[0].registryId" --output text 2>/dev/null)
+	            	if [-z "$repExists"];
+	            	then
+	            		aws ecr create-repository --repository-name ${params.AWS_ACCOUNT}/${JOB_NAME} --region ${params.AWS_REGION}
+	            	fi
+	            	docker tag ${JOB_NAME}:${BUILD_NUMBER} ${params.AWS_ECR_URI}/${params.AWS_ACCOUNT}/${JOB_NAME}:latest	   
+	            	docker push ${params.AWS_ECR_URI}/${params.AWS_ACCOUNT}/${JOB_NAME}:latest         	
 	            '''
 	        }
            
