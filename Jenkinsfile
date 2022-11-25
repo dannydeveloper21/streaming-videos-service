@@ -89,7 +89,7 @@ pipeline{
 	            sh '''
 	            	aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_ECR_URI}
 	            	repExists=$(aws ecr describe-repositories --repository-names "${AWS_ACCOUNT}/${JOB_NAME}" --region ${AWS_REGION} --query "repositories[0].registryId" --output text >/dev/null 2>&1 && echo "yes" || echo "no")
-	            	if [["$repExists" == "no"]];
+	            	if [[ "$repExists" == "no" ]];
 	            	then
 	            		aws ecr create-repository --repository-name ${AWS_ACCOUNT}/${JOB_NAME} --region ${AWS_REGION}
 	            		aws ecr describe-repositories --repository-names "${AWS_ACCOUNT}/${JOB_NAME}" --region ${AWS_REGION}
