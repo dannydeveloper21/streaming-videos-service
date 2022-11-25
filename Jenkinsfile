@@ -43,8 +43,8 @@ pipeline{
 	                if [[ "$isImgExists" == "yes" ]];
 		            	then
 		            		dockerImg=$(docker images --format '{{.Repository}}:{{.Tag}}' | grep ${JOB_NAME})
-		            		containerId=$(docker ps --filter name=${JOB_NAME})
-		            		if [-z "$containerId"];
+		            		containerId=$(docker ps --filter name=${JOB_NAME} >/dev/null 2>&1 && echo "yes" || echo "no")
+		            		if [ "$containerId" == "no" ];
 			        		then			            
 			        			docker rmi $(docker images | grep ${JOB_NAME})
 			        			echo "No container found with image name $dockerImg"	            		
