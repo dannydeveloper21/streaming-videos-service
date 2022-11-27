@@ -68,12 +68,6 @@
 		    <artifactId>aws-java-sdk</artifactId>
 		    <version>1.12.314</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/software.amazon.awscdk/cloudformation -->
-		<dependency>
-		    <groupId>software.amazon.awscdk</groupId>
-		    <artifactId>cloudformation</artifactId>
-		    <version>1.181.0</version>
-		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
