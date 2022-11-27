@@ -48,7 +48,8 @@ pipeline{
 			        			echo "No container named ${JOB_NAME} found."	            		
 			        		else
 			        			containerId=$(docker ps -q --filter name=${JOB_NAME})
-			        			if [[ $(docker container inspect -f '{{.State.Running}}' ${JOB_NAME}) == true ]];
+			        			containerImage=$(docker container inspect $(docker container ls -aq --filter id=$containerId) --format "{{.Image}}")
+			        			if [[ $(docker container inspect -f '{{.State.Running}}' $containerId) == true ]];
 			        			then
 			        				docker stop $containerId
 			        			fi
@@ -62,13 +63,8 @@ pipeline{
 			        				echo "Removing ${JOB_NAME} container ..."
 			        			done
 			        			
-			        			docker rmi $(docker images | grep ${JOB_NAME})
-			        			
-			        			isImageRmvd=$(docker images | grep ${JOB_NAME} > /dev/null 2>&1 && echo "yes" || echo "no")			        			
-			        			while ["$isImageRmvd" == "yes" ];
-			        			do
-			        				isImageRmvd=$(docker images | grep ${JOB_NAME} > /dev/null 2>&1 && echo "yes" || echo "no")
-			        			done
+			        			docker rmi $containerImage
+			        			docker rmi $(docker images | grep ${JOB_NAME}) || false
 			        		fi
 			        else
 			        	echo "No ${JOB_NAME} image found."
