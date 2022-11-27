@@ -99,10 +99,11 @@ pipeline{
 	            	fi
 	            	
 	            	hasEcrImage=$(aws ecr describe-images --repository-name "${AWS_ACCOUNT}/${JOB_NAME}" --region ${AWS_REGION} --image-ids=imageTag=latest > /dev/null 2>&1 && echo "yes" || echo "no")
-	            	if[[ "$hasEcrImage" == "yes" ]];
+	            	if [[ "$hasEcrImage" == "yes" ]];
 	            	then
 	            		aws ecr batch-delete-image --repository-name "${AWS_ACCOUNT}/${JOB_NAME}" --image-ids imageTag=latest
 	            	fi
+	            	
 	            	docker tag ${JOB_NAME}:latest ${AWS_ECR_URI}/${AWS_ACCOUNT}/${JOB_NAME}:latest   
 	            	docker push ${AWS_ECR_URI}/${AWS_ACCOUNT}/${JOB_NAME}:latest        	
 	            '''
