@@ -116,9 +116,11 @@ pipeline{
         }
         
         stage('Create ECS Cluster') {           
-           sh '''
-           		echo create cluster comming soon...
-            '''
+           steps {
+               sh '''
+	           		echo create cluster comming soon...
+	            '''
+           }
         }
     }
 }
