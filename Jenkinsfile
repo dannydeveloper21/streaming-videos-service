@@ -99,7 +99,7 @@ pipeline{
 	            	fi
 	            	
 	            	hasEcrImage=$(aws ecr describe-images --repository-name "${AWS_ACCOUNT}/${JOB_NAME}" --region ${AWS_REGION} --image-ids=imageTag=latest > /dev/null 2>&1 && echo "yes" || echo "no")
-	            	if[[ "$hasImage" == "yes" ]];
+	            	if[[ "$hasEcrImage" == "yes" ]];
 	            	then
 	            		aws ecr batch-delete-image --repository-name "${AWS_ACCOUNT}/${JOB_NAME}" --image-ids imageTag=latest
 	            	fi
