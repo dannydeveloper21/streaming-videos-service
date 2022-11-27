@@ -42,13 +42,12 @@ pipeline{
 	            	isImgExists=$(docker images --format '{{.Repository}}:{{.Tag}}' | grep ${JOB_NAME} >/dev/null 2>&1 && echo "yes" || echo "no")
 	                if [[ "$isImgExists" == "yes" ]];
 		            	then
-		            		hasContainer=$(docker ps -q --filter name=${JOB_NAME} >/dev/null 2>&1 && echo "yes" || echo "no")
 		            		if [[ ! "$(docker ps -q --filter name=${JOB_NAME})" ]];
 			        		then			            
 			        			docker rmi $(docker images --format '{{.Repository}}:{{.Tag}}' | grep ${JOB_NAME})
 			        			echo "No container named ${JOB_NAME} found."	            		
 			        		else
-			        			containerId=$(docker ps --all | grep ${JOB_NAME})
+			        			containerId=$(docker ps -q --filter name=${JOB_NAME})
 			        			if [[ $(docker container inspect -f '{{.State.Running}}' ${JOB_NAME}) == true ]];
 			        			then
 			        				docker stop $containerId
