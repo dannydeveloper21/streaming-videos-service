@@ -54,17 +54,7 @@ pipeline{
 			        				docker stop $containerId
 			        			fi
 			        			docker rm --force $containerId
-			        			
-			        			isContainerRmvd=$(docker ps --filter name=${JOB_NAME} >/dev/null 2>&1 && echo "yes" || echo "no")
-			        			
-			        			while [ "isContainerRmvd" == "yes" ];
-			        			do
-			        				isContainerRmd=$(docker ps --filter name=${JOB_NAME} >/dev/null 2>&1 && echo "yes" || echo "no")
-			        				echo "Removing ${JOB_NAME} container ..."
-			        			done
-			        			
 			        			docker rmi $containerImage
-			        			docker rmi $(docker images | grep ${JOB_NAME}) || false
 			        		fi
 			        else
 			        	echo "No ${JOB_NAME} image found."
