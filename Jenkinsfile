@@ -76,7 +76,7 @@ pipeline{
             steps{
                 sh '''
                 	aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_ECR_URI}
-	            	docker build --no-cache -t ${JOB_NAME}:${BUILD_NUMBER} .
+	            	docker build --no-cache -t ${JOB_NAME} .
                     docker images | grep ${JOB_NAME}
                 '''
                 echo "Build Process completed"
@@ -85,7 +85,7 @@ pipeline{
         
         stage('Create docker container'){
             steps {
-            	sh "docker run -d -p 8083:8083 --name ${JOB_NAME} ${JOB_NAME}:${BUILD_NUMBER}"
+            	sh "docker run -d -p 8083:8083 --name ${JOB_NAME} ${JOB_NAME}"
 			  
  			}              
         }
@@ -106,12 +106,12 @@ pipeline{
 	            		aws ecr create-repository --repository-name ${AWS_ACCOUNT}/${JOB_NAME} --region ${AWS_REGION}
 	            	fi
 	            	
-	            	if[[ $(aws ecr describe-images --repository-name "${AWS_ACCOUNT}/${JOB_NAME}" --region ${AWS_REGION} --image-ids=imageTag=${BUILD_NUMBER} > /dev/null 2>&1 && echo "yes" || echo "no") == "no" ]];
+	            	if[[ $(aws ecr describe-images --repository-name "${AWS_ACCOUNT}/${JOB_NAME}" --region ${AWS_REGION} --image-ids=imageTag=latest > /dev/null 2>&1 && echo "yes" || echo "no") == "no" ]];
 	            	then
-	            		aws ecr batch-delete-image --repository-name "${AWS_ACCOUNT}/${JOB_NAME}" --image-ids imageTag=${BUILD_NUMBER}
+	            		aws ecr batch-delete-image --repository-name "${AWS_ACCOUNT}/${JOB_NAME}" --image-ids imageTag=latest
 	            	fi
-	            	docker tag ${JOB_NAME}:${BUILD_NUMBER} ${AWS_ECR_URI}/${AWS_ACCOUNT}/${JOB_NAME}:${BUILD_NUMBER}	   
-	            	docker push ${AWS_ECR_URI}/${AWS_ACCOUNT}/${JOB_NAME}:${BUILD_NUMBER}         	
+	            	docker tag ${JOB_NAME}:latest ${AWS_ECR_URI}/${AWS_ACCOUNT}/${JOB_NAME}:latest   
+	            	docker push ${AWS_ECR_URI}/${AWS_ACCOUNT}/${JOB_NAME}:latest        	
 	            '''
 	        }
            

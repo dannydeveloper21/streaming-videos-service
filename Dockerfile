@@ -80,8 +80,8 @@ RUN set -eux; \
 	rm -rf "$GNUPGHOME"; \
 	\
 # https://tomcat.apache.org/tomcat-9.0-doc/security-howto.html#Default_web_applications
-#	mv webapps webapps.dist; \
-#	mkdir webapps; \
+	mv webapps webapps2; \
+	mv webapps.dist/ webapps; \
 # we don't delete them completely because they're frankly a pain to get back for users who do want them, and they're generally tiny (~7MB)
 	\
 	nativeBuildDir="$(mktemp -d)"; \
@@ -150,8 +150,8 @@ RUN set -eux; \
 
 #Setup tomcat server
 RUN sed -i 's/port="8080"/port="8083"/' ${CATALINA_HOME}/conf/server.xml
-RUN mv webapps webapps2
-RUN mv webapps.dist/ webapps
+#RUN mv webapps webapps2
+#RUN mv webapps.dist/ webapps
 
 #Removing configuration files
 RUN rm -f ${CATALINA_HOME}/conf/tomcat-users.xml
