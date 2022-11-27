@@ -54,8 +54,11 @@ pipeline{
 			        			fi
 			        			docker rm --force $containerId
 			        			
-			        			while [ $(docker ps --filter name=${JOB_NAME} >/dev/null 2>&1 && echo "yes" || echo "no") == "yes" ];
+			        			isContainerRmd=$(docker ps --filter name=${JOB_NAME} >/dev/null 2>&1 && echo "yes" || echo "no")
+			        			
+			        			while [ "isContainerRmd" == "yes" ];
 			        			do
+			        				isContainerRmd=$(docker ps --filter name=${JOB_NAME} >/dev/null 2>&1 && echo "yes" || echo "no")
 			        				echo "Removing ${JOB_NAME} container ..."
 			        			done
 			        			
