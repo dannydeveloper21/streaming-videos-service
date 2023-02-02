@@ -1,5 +1,5 @@
 pipeline{
-    agent {label 'JenkinsLocal'}
+    agent {label 'maven'}
     tools { maven 'mvn_3.8.6' }
     parameters {
         booleanParam(name: 'FALSE_STS', defaultValue: false, description: '')
