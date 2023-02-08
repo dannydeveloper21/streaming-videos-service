@@ -1,3 +1,4 @@
+#!/bin/bash
 FROM amazoncorretto:8-al2-jdk
 
 ENV CATALINA_HOME /usr/local/tomcat
