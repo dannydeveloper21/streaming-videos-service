@@ -10,6 +10,8 @@ env:
   AWS_REGION: us-east-1
   ECR_REPOSITORY: 583894140807/streaming-video-service
   JOB_NAME: streaming-video-srv
+  AWS_ECR_URI: 583894140807.dkr.ecr.us-east-1.amazonaws.com
+  AWS_ACCOUNT: 583894140807
 
 jobs:
   build:
@@ -34,10 +36,4 @@ jobs:
       uses: aws-actions/amazon-ecr-login@v1
       
     - name: Push Docker image to ECR
-      uses: docker/push-action@v1
-      with:
-        tags: ${{ env.ECR_REPOSITORY }}:${{ env.GITHUB_SHA }}
-      env:
-        DOCKER_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        DOCKER_USERNAME: AWS
-        DOCKER_PASSWORD: ${{ steps.login-ecr.outputs.password }}
+      run: docker push ${{AWS_ECR_URI}}/${{AWS_ACCOUNT}}/${{JOB_NAME}}:latest 
