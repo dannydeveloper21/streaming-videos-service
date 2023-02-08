@@ -1,6 +1,6 @@
 pipeline{
-    agent {label 'maven'}
-    tools { maven 'mvn_3.8.6' }
+    agent {label 'mac'}
+    tools { maven '3.8.6' }
     parameters {
         booleanParam(name: 'FALSE_STS', defaultValue: false, description: '')
         choice(name: 'AWS_REGION', choices: ['us-east-1', 'us-east-2'], description: '')
