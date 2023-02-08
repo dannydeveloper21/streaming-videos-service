@@ -1,0 +1,43 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  AWS_REGION: us-east-1
+  ECR_REPOSITORY: 583894140807/streaming-video-service
+  JOB_NAME: streaming-video-srv
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+    - uses: actions/checkout@v3
+    
+    - name: Set up AWS CLI
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+    
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag ${{env.JOB_NAME}}:$latest
+    
+    - name: Login to ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+      
+    - name: Push Docker image to ECR
+      uses: docker/push-action@v1
+      with:
+        tags: ${{ env.ECR_REPOSITORY }}:${{ env.GITHUB_SHA }}
+      env:
+        DOCKER_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        DOCKER_USERNAME: AWS
+        DOCKER_PASSWORD: ${{ steps.login-ecr.outputs.password }}
