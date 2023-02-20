@@ -8,7 +8,6 @@ on:
 
 env:
   AWS_REGION: us-east-1
-  ECR_REPOSITORY: 583894140807/streaming-video-service
   JOB_NAME: streaming-video-srv
   AWS_ECR_URI: 583894140807.dkr.ecr.us-east-1.amazonaws.com
   AWS_ACCOUNT: 583894140807
@@ -38,11 +37,11 @@ jobs:
         aws-region: ${{ env.AWS_REGION }}
     
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag ${{env.JOB_NAME}}:latest
+      run: docker build . --file Dockerfile --tag ${{env.AWS_ECR_URI}}/${{env.JOB_NAME}}:latest
     
     - name: Login to ECR
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
       
     - name: Push Docker image to ECR
-      run: docker push ${{env.AWS_ECR_URI}}/${{env.AWS_ACCOUNT}}/${{env.JOB_NAME}}:latest 
+      run: docker push ${{env.AWS_ECR_URI}}/${{env.JOB_NAME}}:latest 
