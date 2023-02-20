@@ -45,3 +45,11 @@ jobs:
       
     - name: Push Docker image to ECR
       run: docker push ${{env.AWS_ECR_URI}}/${{env.JOB_NAME}}:latest 
+      
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to ECS
+        uses: aws-actions/amazon-ecs-deploy@v1
+        with:
+          image: ${{env.AWS_ECR_URI}}/${{env.JOB_NAME}}:latest
