@@ -29,7 +29,7 @@ jobs:
         aws-region: ${{ env.AWS_REGION }}
     
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag ${{env.JOB_NAME}}:$latest
+      run: docker build . --file Dockerfile --tag ${{env.JOB_NAME}}:latest
     
     - name: Login to ECR
       id: login-ecr
